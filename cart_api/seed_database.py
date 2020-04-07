@@ -1,8 +1,7 @@
 from typing import Callable, List
 import python_either.either as E
-from pymysql import Connection
 from cart_api.builder import get_db_conn
-from cart_api.persistence import CartRepository
+from cart_api.persistence import CartRepository, Connection
 from cart_api.domain import CartService, CartItem
 from os import getenv
 from json import load as get_json_data

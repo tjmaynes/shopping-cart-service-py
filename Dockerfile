@@ -13,4 +13,7 @@ COPY . .
 RUN python setup.py bdist_wheel
 RUN pip install dist/*.whl
 
+# Safety check
+RUN which shopping_cart_service
+
 CMD ["shopping_cart_service"]

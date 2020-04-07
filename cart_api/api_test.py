@@ -7,6 +7,9 @@ from unittest import TestCase, main
 import cart_api.seed_database as seed_database
 import cart_api.delete_database as delete_database
 from typing import Dict
+import mock
+import datetime
+from unittest.mock import Mock, patch
 
 def build_client() -> Flask:
     def on_success(service: Flask):
@@ -26,7 +29,7 @@ client = build_client()
 
 
 class ApiTestSuite(TestCase):
-    defaultItem = dict(name='hello', manufacturer='something', price=1900)
+    default_item = dict(name='hello', manufacturer='something', price=1900)
 
     def setUp(self):
         self.__client = client
@@ -61,7 +64,7 @@ class ApiTestSuite(TestCase):
 
 
     def test_cart_get_item_by_id_returns_item(self):
-        _, added_item = self.__add_item_to_db(self.defaultItem)
+        _, added_item = self.__add_item_to_db(self.default_item)
 
         status_code, data = self.__get_item_by_id_from_db(added_item["id"])
 
@@ -69,34 +72,44 @@ class ApiTestSuite(TestCase):
         assert data["name"] == added_item["name"]
         assert data["price"] == added_item["price"]
         assert data["manufacturer"] == added_item["manufacturer"]
+        assert data["updated_at"] == added_item["updated_at"]
+        assert data["created_at"] == added_item["created_at"]
 
 
     def test_cart_add_item_returns_item(self):
-        status_code, data = self.__add_item_to_db(self.defaultItem)
+        status_code, data = self.__add_item_to_db(self.default_item)
 
         assert 201 == status_code
-        assert data["name"] == data["name"]
-        assert data["price"] == data["price"]
-        assert data["manufacturer"] == data["manufacturer"]
+        assert data["name"] == self.default_item["name"]
+        assert data["price"] == self.default_item["price"]
+        assert data["manufacturer"] == self.default_item["manufacturer"]
 
         self.__delete_item_from_db(data["id"])
 
 
     def test_cart_update_item_returns_item(self):
-        _, added_item = self.__add_item_to_db(self.defaultItem)
+        _, added_item = self.__add_item_to_db(self.default_item)
+        added_item["name"] = "a new name"
 
-        new_name = "a new name"
-        added_item["name"] = new_name
-        status_code, data = self.__update_item_in_db(added_item)
+        datetime_mock = Mock(wraps=datetime.datetime)
+        mocked_date_time = datetime.datetime(2000, 1, 1)
+        datetime_mock.now.return_value = mocked_date_time
 
-        assert 200 == status_code
-        assert data["name"] == added_item["name"]
-        assert data["price"] == added_item["price"]
-        assert data["manufacturer"] == added_item["manufacturer"]
+        with patch('datetime.datetime', new=datetime_mock):
+            status_code, data = self.__update_item_in_db(added_item)
+
+            assert 200 == status_code
+            assert data["name"] == added_item["name"]
+            assert data["price"] == added_item["price"]
+            assert data["manufacturer"] == added_item["manufacturer"]
+            assert data["created_at"] == added_item["created_at"]
+            
+            assert data["updated_at"] != added_item["updated_at"]
+            assert data["updated_at"] == mocked_date_time.isoformat()
 
 
     def test_cart_delete_item_returns_id(self):
-        _, item = self.__add_item_to_db(self.defaultItem)
+        _, item = self.__add_item_to_db(self.default_item)
         
         status_code, data = self.__delete_item_from_db(item["id"]) 
         

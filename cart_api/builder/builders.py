@@ -1,13 +1,27 @@
 from flask import Flask, Blueprint, request
-from pymysql import Connection
+from flask.json import JSONEncoder
 from signal import signal, SIGINT, SIGTERM
 from typing import Callable, Dict
 import python_either.either as E
 from cart_api.core import Repository
 from cart_api.domain import CartService
-from cart_api.persistence import CartRepository, create_db_conn, DBConfiguration
+from cart_api.persistence import CartRepository, create_db_conn, DBConfiguration, Connection
 from .helpers import handle_exception, handle_success
+from datetime import date
 import logging
+
+
+class ApiJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, date):
+                return obj.isoformat()
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
 
 
 class ApiBuilder:
@@ -45,6 +59,7 @@ class ApiBuilder:
         if self.__should_listen_for_changes:
             self.__listen_for_changes()
         
+        self.__service.json_encoder = ApiJSONEncoder
         return self.__service
 
 

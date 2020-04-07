@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -45,7 +45,7 @@ docker run --rm \
     --env PYTHON_CART_DB_HOST=$DB_HOST \
     --env PYTHON_CART_DB_NAME=$DB_NAME \
     --env PYTHON_CART_DB_PORT=$DB_PORT \
-    --env PYTHON_CART_DB_USERNAME=$DB_NAME \
+    --env PYTHON_CART_DB_USERNAME=$DB_USERNAME \
     --env PYTHON_CART_DB_PASSWORD=$DB_PASSWORD \
     --network $IMAGE_NAME-network \
     --publish $SERVER_PORT:$SERVER_PORT \
