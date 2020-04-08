@@ -1,34 +1,41 @@
 from flask import Flask
 from os import getenv
 from typing import Callable
-import logging
 import python_either.either as E
-from .builder import get_db_conn, build_cart_api
+from .builder import build_api_service
+import logging
 
-
-def build_api_service(get_config: Callable[[str], str]) -> E.Either[Flask, Exception]:
-    return get_db_conn(get_config) | E.then | build_cart_api
+from dotenv import load_dotenv
+from os import getenv
 
 
 def create_api() -> Flask:
-    def run_service(service: Flask) -> Flask:
+    load_dotenv()
+
+    def __run_service(service: Flask) -> Flask:
+        def __set_optional_config_variable(value: str, defaultValue: str = ""):
+            service.config[value] = getenv(value) or defaultValue
+
+        __set_optional_config_variable("ENV", "production")
+
         logging.info("Running server...")
         return service
 
-    def handle_exception(exception: Exception) -> None:
+    def __handle_exception(exception: Exception) -> None:
         logging.error(exception)
         exit(1)
 
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
     
+    logging.info("Attempting Database Connection...")
     return build_api_service(getenv) | E.from_either | dict(
-        if_success=run_service,
-        if_failure=handle_exception
+        if_success=__run_service,
+        if_failure=__handle_exception
     )
 
 
 def main():
-    create_api().run(port=3000)
+    create_api().run(host='0.0.0.0')
 
 
 if __name__ == "__main__":

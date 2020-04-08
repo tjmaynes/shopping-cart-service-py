@@ -126,21 +126,15 @@ def build_cart_endpoint(repository: Repository) -> Blueprint:
     return endpoint
 
 
-def build_cart_api(db_conn: Connection) -> Flask:
-    repository = CartRepository(db_conn=db_conn)
+def build_api_service(get_config: Callable[[str], str]) -> E.Either[Flask, Exception]:
+    def build_cart_api(db_conn: Connection) -> E.Either[Flask, Exception]:
+        repository = CartRepository(db_conn=db_conn)
 
-    return ApiBuilder(db_conn=db_conn) \
-        .add_resource(build_healthcheck_endpoint(repository)) \
-        .add_resource(build_cart_endpoint(repository)) \
-        .build()
+        return E.success(
+            ApiBuilder(db_conn=db_conn) \
+            .add_resource(build_healthcheck_endpoint(repository)) \
+            .add_resource(build_cart_endpoint(repository)) \
+            .build()
+        )
 
-
-def get_db_conn(get_config: Callable[[str], str]) -> E.Either[Connection, Exception]:
-    logging.info("Attempting Database Connection...")
-    return E.success(DBConfiguration(
-        host=get_config("PYTHON_CART_DB_HOST"),
-        username=get_config("PYTHON_CART_DB_USERNAME"),
-        password=get_config("PYTHON_CART_DB_PASSWORD"),
-        name=get_config("PYTHON_CART_DB_NAME"),
-        port=int(get_config("PYTHON_CART_DB_PORT"))
-    )) | E.then | create_db_conn
+    return create_db_conn(get_config("DATABASE_URI")) | E.then | build_cart_api

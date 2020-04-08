@@ -2,35 +2,11 @@
 
 set -e
 
-DB_HOST=$1
-DB_USERNAME=$2
-DB_PASSWORD=$3
-DB_NAME=$4
-DB_PORT=$5
-SERVER_PORT=$6
-REGISTRY_USERNAME=$7
-IMAGE_NAME=$8
-TAG=$9
+REGISTRY_USERNAME=$1
+IMAGE_NAME=$2
+TAG=$3
 
-if [[ -z $DB_HOST ]]; then
-    echo "Please provide a host for the database."
-    exit 1
-elif [[ -z $DB_NAME ]]; then
-    echo "Please provide a name for the database."
-    exit 1
-elif [[ -z $DB_PORT ]]; then
-    echo "Please provide a port that the database is running on."
-    exit 1
-elif [[ -z $DB_USERNAME ]]; then
-    echo "Please provide a username for connecting to the database."
-    exit 1
-elif [[ -z $DB_PASSWORD ]]; then
-    echo "Please provide a password for connecting to the database."
-    exit 1
-elif [[ -z $SERVER_PORT ]]; then
-    echo "Please provide a port to run the image on."
-    exit 1
-elif [[ -z $REGISTRY_USERNAME ]]; then
+if [[ -z $REGISTRY_USERNAME ]]; then
     echo "Please provide a registry username for the image."
     exit 1
 elif [[ -z $IMAGE_NAME ]]; then
@@ -39,14 +15,24 @@ elif [[ -z $IMAGE_NAME ]]; then
 elif [[ -z $TAG ]]; then
     echo "Please provide an tag for the image."
     exit 1
+elif [[ -z $DATABASE_URI ]]; then
+    echo "Please provide a uri for accessing the database."
+    exit 1
+elif [[ -z $DATABASE_MIGRATIONS_DIR ]]; then
+    echo "Please provide a migrations directory."
+    exit 1
+elif [[ -z $DATABASE_SCHEMA_FILE ]]; then
+    echo "Please provide a scheme file location."
+    exit 1
+elif [[ -z $FLASK_APP ]]; then
+    echo "Please provide an entrypoint to the api service."
+    exit 1
 fi
 
 docker run --rm \
-    --env PYTHON_CART_DB_HOST=$DB_HOST \
-    --env PYTHON_CART_DB_NAME=$DB_NAME \
-    --env PYTHON_CART_DB_PORT=$DB_PORT \
-    --env PYTHON_CART_DB_USERNAME=$DB_USERNAME \
-    --env PYTHON_CART_DB_PASSWORD=$DB_PASSWORD \
-    --network $IMAGE_NAME-network \
-    --publish $SERVER_PORT:$SERVER_PORT \
+    --env DATABASE_URI=$DATABASE_URI \
+    --env DATABASE_MIGRATIONS_DIR=$DATABASE_MIGRATIONS_DIR \
+    --env DATABASE_SCHEMA_FILE=$DATABASE_SCHEMA_FILE \
+    --env FLASK_APP=$FLASK_APP \
+    --publish 5000:5000 \
      $REGISTRY_USERNAME/$IMAGE_NAME:$TAG

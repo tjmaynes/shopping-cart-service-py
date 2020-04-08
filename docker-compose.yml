@@ -1,0 +1,29 @@
+# docker-compose.yml
+version: '3'
+services:
+  cart-app:
+    build: .
+    restart: always
+    networks:
+      - default
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cart-db
+    env_file:
+      - .env.development
+
+  cart-db:
+    image: "postgres:9.5.14-alpine"
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - cart-volume:/var/lib/postgresql/data/
+    networks:
+      - default
+    ports:
+      - "5432:5432"
+
+volumes:
+  cart-volume:

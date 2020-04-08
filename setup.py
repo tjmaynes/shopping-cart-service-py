@@ -24,7 +24,8 @@ setup(
     install_requires=[
         'flask==1.1.1',
         'python-either@git+https://git@github.com/tjmaynes/python-either.git@0.0.1',
-        'psycopg2-binary==2.8.5'
+        'psycopg2-binary==2.8.5',
+        'python-dotenv==0.12.0'
     ],
     extras_require={
         'dev': [

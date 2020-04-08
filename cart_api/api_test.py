@@ -1,15 +1,17 @@
 from flask import Flask, json
 import python_either.either as E
-from cart_api.api import build_api_service
-from os import getenv
-import logging
-from unittest import TestCase, main
+from cart_api.builder import build_api_service
 import cart_api.seed_database as seed_database
 import cart_api.delete_database as delete_database
 from typing import Dict
-import mock
-import datetime
+
+from unittest import TestCase, main
 from unittest.mock import Mock, patch
+from dotenv import load_dotenv
+from os import getenv
+import logging
+import datetime
+
 
 def build_client() -> Flask:
     def on_success(service: Flask):
@@ -25,6 +27,7 @@ def build_client() -> Flask:
         if_failure=on_failure
     )
 
+load_dotenv()
 client = build_client()
 
 
@@ -34,6 +37,10 @@ class ApiTestSuite(TestCase):
     def setUp(self):
         self.__client = client
         seed_database.run()
+
+
+    def tearDown(self):
+        delete_database.run()
 
 
     def test_healthcheck_endpoint_returns_200(self):
@@ -115,10 +122,6 @@ class ApiTestSuite(TestCase):
         
         assert 200 == status_code
         assert data["id"] == str(item["id"])
-
-
-    def tearDown(self):
-        delete_database.run()
 
 
     def __parse_json_response(self, response):

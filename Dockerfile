@@ -2,18 +2,21 @@ FROM python:3.8-slim as base
 LABEL AUTHOR "TJ Maynes <tj@tjmaynes.com>"
 
 RUN apt-get update \
-&& apt-get install -y --no-install-recommends git \
+&& apt-get install -y --no-install-recommends git curl \
 && apt-get purge -y --auto-remove \
 && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/download/v1.7.0/dbmate-linux-amd64
+RUN chmod +x /usr/local/bin/dbmate
 
 WORKDIR /builder
 
 COPY . .
 
-RUN python setup.py bdist_wheel
-RUN pip install dist/*.whl
+RUN chmod +x ./scripts/create_and_install_distribution.sh
+RUN ./scripts/create_and_install_distribution.sh
 
-# Safety check
-RUN which shopping_cart_service
+EXPOSE 5000
 
-CMD ["shopping_cart_service"]
+RUN chmod +x ./scripts/run_app.sh
+ENTRYPOINT [ "./scripts/run_app.sh" ]

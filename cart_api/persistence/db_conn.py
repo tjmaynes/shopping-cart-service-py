@@ -3,7 +3,7 @@ import python_either.either as E
 from cart_api.core import RepositoryException, ConnectionFailedRepositoryException
 from psycopg2 import connect
 from typing import Protocol, TypeVar
-
+from urllib.parse import urlparse
 
 T = TypeVar("T")
 
@@ -31,10 +31,21 @@ class DBConfiguration:
     port: int
 
 
-# TODO: def retry(e: Either[Any, Any], retry_duration: int = 3, retry_count: int = 3) -> Either[Any, Any]:
+def parse_db_config(database_uri: str) -> DBConfiguration:
+    result = urlparse(database_uri)
+    return DBConfiguration(
+        host=result.hostname,
+        username=result.username,
+        password=result.password,
+        name=result.path[1:],
+        port=result.port
+    )
 
-def create_db_conn(config: DBConfiguration) -> E.Either[Connection, RepositoryException]:
+
+# TODO: def retry(e: Either[Any, Any], retry_duration: int = 3, retry_count: int = 3) -> Either[Any, Any]:
+def create_db_conn(database_uri: str) -> E.Either[Connection, RepositoryException]:
     try:
+        config = parse_db_config(database_uri)
         return E.success(connect(host=config.host, user=config.username, password=config.password, dbname=config.name, port=config.port))
     except Exception as inst:
         return E.failure(ConnectionFailedRepositoryException(list(inst.args)))

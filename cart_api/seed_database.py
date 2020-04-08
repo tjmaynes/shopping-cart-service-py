@@ -1,11 +1,10 @@
 from typing import Callable, List
 import python_either.either as E
-from cart_api.builder import get_db_conn
-from cart_api.persistence import CartRepository, Connection
+from cart_api.persistence import CartRepository, Connection, create_db_conn
 from cart_api.domain import CartService, CartItem
+from cart_api.core import convert_list_to_either
 from os import getenv
 from json import load as get_json_data
-from cart_api.core import convert_list_to_either
 
 
 def safely_load_json(filename: str) -> E.Either[CartItem, Exception]:
@@ -26,7 +25,7 @@ def seed_cart_db(db_conn: Connection) -> E.Either[List[str], Exception]:
 
 
 def run() -> str:
-    return get_db_conn(get_config=getenv) | E.then | seed_cart_db | E.from_either | dict(
+    return create_db_conn(database_uri=getenv("DATABASE_URI")) | E.then | seed_cart_db | E.from_either | dict(
         if_success=(lambda items: f"Seeded database with {len(items)} items!"),
         if_failure=(lambda ex: f"Unable to seed Cart database - {ex.args}!")
     )

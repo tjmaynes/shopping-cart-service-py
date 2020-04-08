@@ -32,44 +32,14 @@ To run all tests (**make sure database is running**), run the following command:
 make test
 ```
 
-To start the app, run the following command:
+To start the app and database locally, run the following command:
 ```bash
-make start_local_app
-```
-
-To run a database locally, run the following command:
-```bash
-make start_local_db
-```
-
-To stop the local running database, run the following command:
-```bash
-make stop_local_db
+make development
 ```
 
 To debug the local database, run the following command:
 ```bash
 make debug_local_db
-```
-
-To create a local database, run the following command:
-```bash
-make create_local_db
-```
-
-To run migrations, run the following command:
-```bash
-make run_migrations
-```
-
-To seed the database, run the following command:
-```bash
-make seed_database
-```
-
-To create the distribution locally, run the following command:
-```bash
-make create_and_install_distribution
 ```
 
 To build the docker image, run the following command:
@@ -92,38 +62,26 @@ To remove dependencies the project, run the following command:
 make clean
 ```
 
-## Distributing the App
-To create and install the distribution, run the following command:
-```bash
-make create_and_install_distribution
-```
-
-Next, run the following command to run the app:
-```bash
-make run_distribution
-```
-
 ## Running App
 
 In order to run the app, run the following commands:
 ```bash
-make start_local_db && make run_migrations
-make run_local_app
+make development
 ```
 
 To get the health endpoint, run the following command:
 ```bash
-curl -X GET localhost:3000/healthcheck
+curl -X GET 0.0.0.0:5000/healthcheck
 ```
 
 To get all cart items, run the following command:
 ```bash
-curl -X GET 'localhost:3000/cart/?limit=20'
+curl -X GET 0.0.0.0:5000/cart/?limit=20
 ```
 
 To get a cart item by id, run the following command:
 ```bash
-curl -X GET localhost:3000/cart/1
+curl -X GET 0.0.0.0:5000/cart/1
 ```
 
 To add a cart item, run the following command:
@@ -132,7 +90,7 @@ curl \
     -X POST \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "name=Lens&price=120000&manufacturer=Canon" \
-    localhost:3000/cart/
+    0.0.0.0:5000/cart/
 ```
 
 To update a cart item, run the following command:
@@ -141,12 +99,12 @@ curl \
     -X PUT \
     -H "Content-Type: application/json" \
     -d '{"name": "Lens Cap", "price": "888888888", "manufacturer": "Canon"}' \
-    localhost:3000/cart/1
+    0.0.0.0:5000/cart/1
 ```
 
 To remove a cart item, run the following command:
 ```bash
-curl -X DELETE localhost:3000/cart/1
+curl -X DELETE 0.0.0.0:5000/cart/1
 ```
 
 ## License
