@@ -21,5 +21,4 @@ def convert_list_to_either(items: List[E.Either[T, Exception]]) -> E.Either[List
             return E.failure(failure_result)
         else:
             return E.failure(Exception("Unexpected error has occurred!"))
-    
     return E.success(success_results)

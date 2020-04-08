@@ -1,3 +1,4 @@
+ENVIRONMENT ?= debug
 PYTHON_CART_DB_USERNAME ?= postgres
 PYTHON_CART_DB_NAME = cart
 REGISTRY_USERNAME ?= tjmaynes
@@ -23,7 +24,7 @@ install_dependencies: ensure_virtualenv_installed
 
 test: ensure_virtualenv_installed install_dependencies
 	chmod +x ./scripts/run_tests.sh
-	. .venv/bin/activate; source .env.debug && ./scripts/run_tests.sh
+	. .venv/bin/activate; source .env.${ENVIRONMENT} && ./scripts/run_tests.sh
 
 development: ensure_docker_installed ensure_dbmate_installed install_dependencies
 	docker-compose build && docker-compose up

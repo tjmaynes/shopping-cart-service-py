@@ -52,15 +52,13 @@ class ApiTestSuite(TestCase):
         assert data == "success"
 
 
-    def test_cart_index_returns_10_items_from_cart(self):    
+    def test_cart_index_returns_items_from_cart(self):    
         response = self.__client.get('/cart/', content_type='application/json')
         assert 200 == response.status_code
 
         data = json.loads(response.data)
         assert len(data) == 10
 
-
-    def test_cart_index_with_query_params_returns_list_of_available_cart_items(self):
         page_size = 20
         response = self.__client.get(f'/cart/?page_number=0&page_size={page_size}', content_type='application/json')
 
@@ -113,6 +111,8 @@ class ApiTestSuite(TestCase):
             
             assert data["updated_at"] != added_item["updated_at"]
             assert data["updated_at"] == mocked_date_time.isoformat()
+        
+        self.__delete_item_from_db(data["id"])
 
 
     def test_cart_delete_item_returns_id(self):

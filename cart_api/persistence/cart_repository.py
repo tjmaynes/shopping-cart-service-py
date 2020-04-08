@@ -24,16 +24,9 @@ class CartRepository(Repository[CartItem]):
 
 
     def get_all_items(self, page_number: int = 0, page_size: int = 10) -> E.Either[List[CartItem], RepositoryException]:
-        def get_limit(page_number: int, page_size: int) -> [int]:
-            if page_number == 0:
-                return [page_size, page_number]
-            else:
-                return [page_size, page_number * page_size]
-
         try:
-            limit = get_limit(page_number=page_number, page_size=page_size)
             cursor = self.__db_conn.cursor()
-            cursor.execute("SELECT id, name, price, manufacturer, updated_at, created_at FROM cart LIMIT %s OFFSET %s", limit)
+            cursor.execute("SELECT id, name, price, manufacturer, updated_at, created_at FROM cart LIMIT %s OFFSET %s", [page_size, page_number * page_size])
             rows = cursor.fetchmany(size=page_size)
             if rows:
                 return E.success(list(map(self.__from_tuple, rows)))
