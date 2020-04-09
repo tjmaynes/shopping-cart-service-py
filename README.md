@@ -4,7 +4,7 @@
 > - building a Flask app
 > - building pipelines with the Either monad
 > - integration tests via unittest
-> - setting up Mysql via Docker
+> - setting up Postgres via Docker
 > - database migrations via dbmate
 > - typing library (Protocol, Generic, TypeVar)
 > - setting up python app distribution
