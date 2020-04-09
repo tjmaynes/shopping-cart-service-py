@@ -28,11 +28,11 @@ install_dependencies: ensure_virtualenv_installed
 	test -d .venv || virtualenv .venv
 	. .venv/bin/activate; pip install -e ".[dev]"
 
-test: ensure_virtualenv_installed install_dependencies
+test: ensure_virtualenv_installed 
 	chmod +x ./scripts/run_tests.sh
 	. .venv/bin/activate; source .env.$(TEST_ENVIRONMENT) && ./scripts/run_tests.sh
 
-development: ensure_docker_installed ensure_dbmate_installed install_dependencies
+development: ensure_docker_installed ensure_dbmate_installed 
 	docker-compose build && docker-compose up
 
 run_local_db: ensure_docker_installed
@@ -87,7 +87,7 @@ remove_service: ensure_kubectl_installed
 switch_context: ensure_kubectl_installed
 	kubectl config use-context docker-for-desktop
 
-deploy_app: switch_context add_deployment	add_secrets add_service 
+deploy_app: switch_context add_deployment add_secrets add_service 
 
 destroy_app: switch_context remove_deployment remove_secrets remove_service
 
