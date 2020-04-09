@@ -35,6 +35,11 @@ To run all tests (**make sure database is running**), run the following command:
 make test
 ```
 
+To make sure the database is running, run the following command:
+```bash
+make run_local_db
+```
+
 To start the app and database locally, run the following command:
 ```bash
 make development
