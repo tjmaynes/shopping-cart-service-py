@@ -6,7 +6,7 @@ IMAGE_NAME ?= python-shopping-cart-service
 TAG = $(shell cat cart_api/VERSION)
 
 define ensure_command_installed
-	command -v $1
+	command -v $1 || (echo "Command '$1' not found..." && false)
 endef
 
 ensure_virtualenv_installed:
@@ -18,13 +18,19 @@ ensure_docker_installed:
 ensure_dbmate_installed:
 	$(call ensure_command_installed,dbmate)
 
+ensure_git_secret_installed:
+	$(call ensure_command_installed,git-secret)
+
+ensure_kubectl_installed:
+	$(call ensure_command_installed,kubectl)
+
 install_dependencies: ensure_virtualenv_installed
 	test -d .venv || virtualenv .venv
 	. .venv/bin/activate; pip install -e ".[dev]"
 
 test: ensure_virtualenv_installed install_dependencies
 	chmod +x ./scripts/run_tests.sh
-	. .venv/bin/activate; source .env.${ENVIRONMENT} && ./scripts/run_tests.sh
+	. .venv/bin/activate; source .env.$(ENVIRONMENT) && ./scripts/run_tests.sh
 
 development: ensure_docker_installed ensure_dbmate_installed install_dependencies
 	docker-compose build && docker-compose up
@@ -53,6 +59,28 @@ push_image: ensure_docker_installed
 	$(IMAGE_NAME) \
 	$(TAG) \
 	$(REGISTRY_PASSWORD)
+
+reveal_secrets: ensure_git_secret_installed
+	git secret reveal -f
+
+add_secrets: reveal_secrets ensure_kubectl_installed
+	kubectl apply -f cart_infrastructure/secrets.yml
+
+remove_secrets: reveal_secrets ensure_kubectl_installed
+	kubectl delete -f cart_infrastructure/secrets.yml
+
+add_deployment: ensure_kubectl_installed
+	kubectl apply -f cart_infrastructure/deployment.yml
+
+remove_deployment: ensure_kubectl_installed
+	kubectl delete -f cart_infrastructure/deployment.yml
+
+switch_context: ensure_kubectl_installed
+	kubectl config use-context docker-for-desktop
+
+deploy_app: switch_context add_secrets add_deployment
+
+destroy_app: switch_context remove_secrets remove_deployment
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/

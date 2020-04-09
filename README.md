@@ -12,9 +12,12 @@
 
 ## Requirements
 
+- [GNU Make](https://www.gnu.org/software/make)
 - [Python 3.8](https://www.python.org/downloads/release/python-382/)
 - [Docker](https://hub.docker.com/)
 - [DBMate](https://github.com/amacneil/dbmate)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [Git-Secret](https://git-secret.io/)
 
 ## Usage
 To install `virtualenv`, run the following command:
@@ -57,16 +60,25 @@ To push the docker image, run the following command:
 make push_image
 ```
 
-To remove dependencies the project, run the following command:
+To deploy the `shopping-cart-service`, run the following command:
+```bash
+make deploy_app
+```
+
+To destroy the `shopping-cart-service`, run the following command:
+```bash
+make destroy_app
+```
+
+To get the project in a clean state, run the following command:
 ```bash
 make clean
 ```
 
 ## Running App
-
-In order to run the app, run the following commands:
+To run the app using `kuberenetes`, run the following commands:
 ```bash
-make development
+make deploy_app
 ```
 
 To get the health endpoint, run the following command:
