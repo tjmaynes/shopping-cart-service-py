@@ -78,12 +78,18 @@ add_deployment: ensure_kubectl_installed
 remove_deployment: ensure_kubectl_installed
 	kubectl delete -f cart_infrastructure/deployment.yml
 
+add_service: ensure_kubectl_installed
+	kubectl apply -f cart_infrastructure/service.yml
+
+remove_service: ensure_kubectl_installed
+	kubectl delete -f cart_infrastructure/service.yml
+
 switch_context: ensure_kubectl_installed
 	kubectl config use-context docker-for-desktop
 
-deploy_app: switch_context add_secrets add_deployment
+deploy_app: switch_context add_deployment	add_secrets add_service 
 
-destroy_app: switch_context remove_secrets remove_deployment
+destroy_app: switch_context remove_deployment remove_secrets remove_service
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/
