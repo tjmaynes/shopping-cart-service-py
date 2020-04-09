@@ -51,8 +51,8 @@ To add a cart item, run the following command:
 ```bash
 curl \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "name=Lens&price=120000&manufacturer=Canon" \
+    -H "Content-Type: application/json" \
+    -d '{"name":"70-200mm Lens","price":240000,"manufacturer": "Canon"}' \
     localhost:5000/cart/
 ```
 
