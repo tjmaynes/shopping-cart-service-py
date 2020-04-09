@@ -17,4 +17,4 @@ elif [[ -z $TAG ]]; then
     exit 1
 fi
 
-docker build --no-cache -t $REGISTRY_USERNAME/$IMAGE_NAME:$TAG .
+docker build -t $REGISTRY_USERNAME/$IMAGE_NAME:$TAG .
