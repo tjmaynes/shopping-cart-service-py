@@ -131,6 +131,15 @@ To get the project in a clean state, run the following command:
 make clean
 ```
 
+## Todo
+
+- Setup CI pipeline
+- Add 'Getting Started' section
+- Add performance testing
+- Setup gunicorn
+- Add support for monitoring
+- Add better support for logging
+
 ## License
 
 ```
