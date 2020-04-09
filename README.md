@@ -10,6 +10,8 @@
 > - setting up python app distribution
 > - useful build, debug and push scripts for docker
 
+- ![DockerHub](https://img.shields.io/docker/pulls/tjmaynes/python-shopping-cart-service.svg)
+
 ## Requirements
 
 - [GNU Make](https://www.gnu.org/software/make)
