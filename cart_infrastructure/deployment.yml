@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: python-shopping-cart-service 
-          image: tjmaynes/python-shopping-cart-service:1.0.1
+          image: tjmaynes/python-shopping-cart-service:1.0.2
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
