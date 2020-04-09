@@ -1,13 +1,13 @@
 # Shopping Cart
 
-> Learning Python by building a shopping cart CRUD service with concepts introduced/learned:
-> - building a Flask app
-> - building pipelines with the Either monad
+> The goal of this project is to demonstrate what managing, testing, building and deploying a CRUD Python service looks like. By building this service, I was able see how the following works:
+> - building a CRUD service using [Flask](https://palletsprojects.com/p/flask/), the popular Python web framework
+> - using the [Either monad](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/10_Error_Handling) to build operation pipelines
 > - integration tests via unittest
-> - setting up Postgres via Docker
-> - database migrations via dbmate
-> - typing library (Protocol, Generic, TypeVar)
-> - setting up python app distribution
+> - setting up Postgres via [docker-compose](https://docs.docker.com/compose/)
+> - database migrations via [dbmate](https://github.com/amacneil/dbmate)
+> - applying type safety (Protocol, Generic, TypeVar) to Python via the [typing](https://docs.python.org/3/library/typing.html) library
+> - setting up python app distribution via [wheel](https://pythonwheels.com/)
 > - useful build, debug and push scripts for docker
 
 ## Requirements
@@ -19,8 +19,59 @@
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [Git-Secret](https://git-secret.io/)
 
+## Running the App
+To run the app in a `kuberenetes` environment, run the following command:
+```bash
+make deploy_app
+```
+
+or to run the app in a `docker-compose` environment, run the following command:
+```bash
+make development
+```
+
+### The Service
+
+To get the health endpoint, run the following command:
+```bash
+curl -X GET localhost:5000/healthcheck
+```
+
+To get all cart items, run the following command:
+```bash
+curl -X GET 'localhost:5000/cart/?page_number=0&page_size=20'
+```
+
+To get a cart item by id, run the following command:
+```bash
+curl -X GET localhost:5000/cart/1
+```
+
+To add a cart item, run the following command:
+```bash
+curl \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "name=Lens&price=120000&manufacturer=Canon" \
+    localhost:5000/cart/
+```
+
+To update a cart item, run the following command:
+```bash
+curl \
+    -X PUT \
+    -H "Content-Type: application/json" \
+    -d '{"name": "Lens Cap", "price": "888888888", "manufacturer": "Canon"}' \
+    localhost:5000/cart/1
+```
+
+To remove a cart item, run the following command:
+```bash
+curl -X DELETE localhost:5000/cart/1
+```
+
 ## Usage
-To install `virtualenv`, run the following command:
+To install `virtualenv` (python dependency manager), run the following command:
 ```bash
 pip install virtualenv
 ```
@@ -78,50 +129,6 @@ make destroy_app
 To get the project in a clean state, run the following command:
 ```bash
 make clean
-```
-
-## Running App
-To run the app using `kuberenetes`, run the following commands:
-```bash
-make deploy_app
-```
-
-To get the health endpoint, run the following command:
-```bash
-curl -X GET localhost:5000/healthcheck
-```
-
-To get all cart items, run the following command:
-```bash
-curl -X GET 'localhost:5000/cart/?page_number=0&page_size=20'
-```
-
-To get a cart item by id, run the following command:
-```bash
-curl -X GET localhost:5000/cart/1
-```
-
-To add a cart item, run the following command:
-```bash
-curl \
-    -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "name=Lens&price=120000&manufacturer=Canon" \
-    localhost:5000/cart/
-```
-
-To update a cart item, run the following command:
-```bash
-curl \
-    -X PUT \
-    -H "Content-Type: application/json" \
-    -d '{"name": "Lens Cap", "price": "888888888", "manufacturer": "Canon"}' \
-    localhost:5000/cart/1
-```
-
-To remove a cart item, run the following command:
-```bash
-curl -X DELETE localhost:5000/cart/1
 ```
 
 ## License
