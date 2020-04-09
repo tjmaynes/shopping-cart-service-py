@@ -1,8 +1,7 @@
 from flask import Flask, json
 import python_either.either as E
 from cart_api.builder import build_api_service
-import cart_api.seed_database as seed_database
-import cart_api.delete_database as delete_database
+from cart_api.persistence import seed_database, delete_database
 from typing import Dict
 
 from unittest import TestCase, main

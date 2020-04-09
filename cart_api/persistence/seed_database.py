@@ -1,6 +1,7 @@
 from typing import Callable, List
 import python_either.either as E
-from cart_api.persistence import CartRepository, Connection, create_db_conn
+from .cart_repository import CartRepository
+from .db_conn import Connection, create_db_conn
 from cart_api.domain import CartService, CartItem
 from cart_api.core import convert_list_to_either
 from os import getenv
