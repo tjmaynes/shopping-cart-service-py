@@ -1,4 +1,4 @@
-# Shopping Cart
+# Sample Python App
 
 > The goal of this project is to demonstrate what managing, testing, building and deploying a CRUD Python service looks like. By building this service, I was able see how the following works:
 > - building a CRUD service using [Flask](https://palletsprojects.com/p/flask/), the popular Python web framework
