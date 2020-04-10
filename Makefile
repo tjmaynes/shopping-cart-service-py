@@ -66,7 +66,10 @@ push_image: ensure_docker_installed
 reveal_secrets: ensure_git_secret_installed
 	git secret reveal -f
 
-add_secrets: reveal_secrets ensure_kubectl_installed
+create_secrets_config:
+	cp -rf cart_infrastructure/secrets.example.yml cart_infrastructure/secrets.yml
+
+add_secrets: ensure_kubectl_installed
 	kubectl apply -f cart_infrastructure/secrets.yml
 
 remove_secrets: reveal_secrets ensure_kubectl_installed
