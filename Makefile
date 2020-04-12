@@ -66,24 +66,27 @@ ensure_kubectl_installed:
 switch_context: ensure_kubectl_installed
 	kubectl config use-context docker-for-desktop
 
-deploy_db: switch_context
+add_secrets:
+	kubectl apply -f cart_infrastructure/shopping-cart-common/secrets.yml
+
+destroy_secrets:
+	kubectl delete -f cart_infrastructure/shopping-cart-common/secrets.yml
+
+deploy_db: switch_context add_secrets 
 	kubectl apply -f cart_infrastructure/shopping-cart-db/persistence.yml
-	kubectl apply -f cart_infrastructure/shopping-cart-db/secrets.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-db/deployment.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-db/service.yml
 
-destroy_db: switch_context
-	kubectl delete -f cart_infrastructure/shopping-cart-db/secrets.yml
+destroy_db: switch_context destroy_secrets
 	kubectl delete -f cart_infrastructure/shopping-cart-db/deployment.yml
 	kubectl delete -f cart_infrastructure/shopping-cart-db/service.yml
 	kubectl delete -f cart_infrastructure/shopping-cart-db/persistence.yml
 
 deploy_app: switch_context deploy_db
-	kubectl apply -f cart_infrastructure/shopping-cart-service/secrets.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-service/deployment.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-service/service.yml
 
-destroy_app: switch_context destroy_db
+destroy_app: switch_context destroy_db destroy_secrets
 	kubectl delete -f cart_infrastructure/shopping-cart-service/secrets.yml
 	kubectl delete -f cart_infrastructure/shopping-cart-service/deployment.yml
 	kubectl delete -f cart_infrastructure/shopping-cart-service/service.yml

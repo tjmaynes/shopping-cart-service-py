@@ -29,7 +29,7 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: shopping-cart-db
+                  name: shopping-cart-secrets
                   key: db-password
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
