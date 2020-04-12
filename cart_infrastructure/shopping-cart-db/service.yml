@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-cart-db
+  labels:
+    app: shopping-cart-db 
+spec:
+  type: NodePort
+  ports:
+   - port: 5432
+     nodePort: 30050
+     name: shopping-cart-db
+  selector:
+   app: shopping-cart-db 

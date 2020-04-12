@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-shopping-cart-service
+  name: shopping-cart-service
 spec:
   selector:
     matchLabels:
@@ -13,16 +13,16 @@ spec:
         app: shopping-cart-service
     spec:
       containers:
-        - name: python-shopping-cart-service 
+        - name: shopping-cart-service 
           image: tjmaynes/python-shopping-cart-service:1.0.2
-          imagePullPolicy: Always
+          imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5000
           env:
             - name: DATABASE_URI
               valueFrom:
                 secretKeyRef:
-                  name: python-shopping-cart-service
+                  name: shopping-cart-service
                   key: db-uri
             - name: FLASK_APP
               value: "python-shopping-cart-service"

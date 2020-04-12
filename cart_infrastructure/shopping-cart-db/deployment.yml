@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shopping-cart-db 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shopping-cart-db 
+    spec:
+      containers:
+        - name: shopping-cart-db 
+          image: postgres:9.5.14-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: shopping-cart-db
+                  key: db-name 
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: shopping-cart-db
+                  key: db-username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: shopping-cart-db
+                  key: db-password
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: shopping-cart-db 
+      volumes:
+        - name: shopping-cart-db 
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim

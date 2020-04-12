@@ -21,9 +21,6 @@ ensure_dbmate_installed:
 ensure_git_secret_installed:
 	$(call ensure_command_installed,git-secret)
 
-ensure_kubectl_installed:
-	$(call ensure_command_installed,kubectl)
-
 install_dependencies: ensure_virtualenv_installed
 	test -d .venv || virtualenv .venv
 	. .venv/bin/activate; pip install -e ".[dev]"
@@ -63,36 +60,33 @@ push_image: ensure_docker_installed
 	$(TAG) \
 	$(REGISTRY_PASSWORD)
 
-reveal_secrets: ensure_git_secret_installed
-	git secret reveal -f
-
-create_secrets_config:
-	cp -rf cart_infrastructure/secrets.example.yml cart_infrastructure/secrets.yml
-
-add_secrets: ensure_kubectl_installed
-	kubectl apply -f cart_infrastructure/secrets.yml
-
-remove_secrets: reveal_secrets ensure_kubectl_installed
-	kubectl delete -f cart_infrastructure/secrets.yml
-
-add_deployment: ensure_kubectl_installed
-	kubectl apply -f cart_infrastructure/deployment.yml
-
-remove_deployment: ensure_kubectl_installed
-	kubectl delete -f cart_infrastructure/deployment.yml
-
-add_service: ensure_kubectl_installed
-	kubectl apply -f cart_infrastructure/service.yml
-
-remove_service: ensure_kubectl_installed
-	kubectl delete -f cart_infrastructure/service.yml
+ensure_kubectl_installed:
+	$(call ensure_command_installed,kubectl)
 
 switch_context: ensure_kubectl_installed
 	kubectl config use-context docker-for-desktop
 
-deploy_app: switch_context add_deployment add_secrets add_service 
+deploy_db: switch_context
+	kubectl apply -f cart_infrastructure/shopping-cart-db/persistence.yml
+	kubectl apply -f cart_infrastructure/shopping-cart-db/secrets.yml
+	kubectl apply -f cart_infrastructure/shopping-cart-db/deployment.yml
+	kubectl apply -f cart_infrastructure/shopping-cart-db/service.yml
 
-destroy_app: switch_context remove_deployment remove_secrets remove_service
+destroy_db: switch_context
+	kubectl delete -f cart_infrastructure/shopping-cart-db/secrets.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-db/deployment.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-db/service.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-db/persistence.yml
+
+deploy_app: switch_context deploy_db
+	kubectl apply -f cart_infrastructure/shopping-cart-service/secrets.yml
+	kubectl apply -f cart_infrastructure/shopping-cart-service/deployment.yml
+	kubectl apply -f cart_infrastructure/shopping-cart-service/service.yml
+
+destroy_app: switch_context destroy_db
+	kubectl delete -f cart_infrastructure/shopping-cart-service/secrets.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-service/deployment.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-service/service.yml
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/
