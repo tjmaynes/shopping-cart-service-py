@@ -24,29 +24,7 @@ To get started make sure the following requirements (for development and deploym
 
 > This project uses the `make` command quite frequently. Similar to how `gradle` is used in Java, Spring, or many other JVM-based projects, `make` is used as a tool that acts as an "interface" to the project. A big reason as to why I've chosen `make` as my de-facto "project interface tool" is that it acts as a simple, well documented, script runner and it's generally available on most unix-based machines. For more info on the available `make` commands, check out the [usage](https://github.com/tjmaynes/sample-python-app#usage) section. 
 
-Next, make sure that the project dependencies have been installed with the following command:
-> If you don't have `virtualenv` currently installed, then run `pip install virtualenv`.
-```bash
-make install_dependencies
-```
-
-### Sanity Check
-
-For a quick sanity check, let's make sure the test suite for the application is running as expected.
-1. Check to make sure `Docker` is running.
-2. Since our test suite talks to a database, let's make sure that PostgreSQL is running locally via:
-```bash
-make run_local_db
-```
-3. Finally, let's run our tests via:
-```bash
-make test
-```
-
-If the test suite is passing, then please move on to the next section else please provide an [issue](https://github.com/tjmaynes/sample-python-app/issues) for the project.
-
 ### Running the App
-
 To run the app in a `kuberenetes` cluster, run the following command:
 ```bash
 make deploy_app
@@ -58,7 +36,6 @@ make development
 ```
 
 ### Playing with the Shopping Cart Service
-
 To get the health endpoint, run the following command:
 ```bash
 curl -X GET localhost:5000/healthcheck
@@ -96,6 +73,26 @@ To remove a cart item, run the following command:
 ```bash
 curl -X DELETE localhost:5000/cart/1
 ```
+
+### Development
+First, make sure that the project dependencies have been installed with the following command:
+> If you don't have `virtualenv` currently installed, then run `pip install virtualenv`.
+```bash
+make install_dependencies
+```
+
+Next, let's make sure the test suite for the application is running as expected.
+1. Check to make sure `Docker` is running.
+2. Since our test suite talks to a database, let's make sure that PostgreSQL is running locally via:
+```bash
+make run_local_db
+```
+3. Finally, let's run our tests via:
+```bash
+make test
+```
+
+*If the test suite is not passing, please provide an [issue](https://github.com/tjmaynes/sample-python-app/issues) for the project.*
 
 ## Usage
 To install `virtualenv` (python dependency manager), run the following command:
