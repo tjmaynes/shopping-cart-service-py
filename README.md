@@ -32,7 +32,7 @@ make deploy_app
 
 *or* to run the app using `docker-compose`, run the following command:
 ```bash
-make development
+make develop_app
 ```
 
 ### Playing with the Shopping Cart Service

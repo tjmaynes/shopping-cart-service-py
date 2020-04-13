@@ -4,7 +4,7 @@ services:
     image: "tjmaynes/python-shopping-cart-service:1.0.3"
     restart: always
     networks:
-      - default
+      - cart-network 
     ports:
       - "5000:5000"
     depends_on:
@@ -15,14 +15,17 @@ services:
   cart-db:
     image: "postgres:9.5.14-alpine"
     restart: always
-    environment:
-      - POSTGRES_PASSWORD=password
     volumes:
       - cart-volume:/var/lib/postgresql/data/
     networks:
-      - default
+      - cart-network 
     ports:
       - "5432:5432"
+    env_file:
+      - .env.development
 
 volumes:
   cart-volume:
+
+networks:
+  cart-network:

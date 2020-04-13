@@ -29,8 +29,8 @@ test: ensure_virtualenv_installed
 	chmod +x ./scripts/run_tests.sh
 	. .venv/bin/activate; source .env.$(TEST_ENVIRONMENT) && ./scripts/run_tests.sh
 
-development: ensure_docker_installed ensure_dbmate_installed 
-	docker-compose build && docker-compose up
+develop_app: ensure_docker_installed ensure_dbmate_installed 
+	docker-compose up
 
 run_local_db: ensure_docker_installed
 	docker-compose run --service-ports cart-db 
