@@ -70,26 +70,25 @@ add_secrets:
 	kubectl apply -f cart_infrastructure/shopping-cart-common/secrets.yml
 
 destroy_secrets:
-	kubectl delete -f cart_infrastructure/shopping-cart-common/secrets.yml
+	kubectl delete -f cart_infrastructure/shopping-cart-common/secrets.yml || true
 
-deploy_db: switch_context add_secrets 
+deploy_db: add_secrets 
 	kubectl apply -f cart_infrastructure/shopping-cart-db/persistence.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-db/deployment.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-db/service.yml
 
-destroy_db: switch_context destroy_secrets
-	kubectl delete -f cart_infrastructure/shopping-cart-db/deployment.yml
-	kubectl delete -f cart_infrastructure/shopping-cart-db/service.yml
-	kubectl delete -f cart_infrastructure/shopping-cart-db/persistence.yml
+destroy_db: destroy_secrets 
+	kubectl delete -f cart_infrastructure/shopping-cart-db/deployment.yml || true
+	kubectl delete -f cart_infrastructure/shopping-cart-db/service.yml || true
+	kubectl delete -f cart_infrastructure/shopping-cart-db/persistence.yml || true
 
-deploy_app: switch_context deploy_db
+deploy_app: deploy_db
 	kubectl apply -f cart_infrastructure/shopping-cart-service/deployment.yml
 	kubectl apply -f cart_infrastructure/shopping-cart-service/service.yml
 
-destroy_app: switch_context destroy_db destroy_secrets
-	kubectl delete -f cart_infrastructure/shopping-cart-service/secrets.yml
-	kubectl delete -f cart_infrastructure/shopping-cart-service/deployment.yml
-	kubectl delete -f cart_infrastructure/shopping-cart-service/service.yml
+destroy_app: destroy_db
+	kubectl delete -f cart_infrastructure/shopping-cart-service/deployment.yml || true
+	kubectl delete -f cart_infrastructure/shopping-cart-service/service.yml || true
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/

@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: postgres-pv-volume
+  name: shopping-cart-db-pv-volume
   labels:
     type: local
     app: shopping-cart-db
@@ -17,7 +17,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgres-pv-claim
+  name: shopping-cart-db-pv-claim
   labels:
     app: shopping-cart-db 
 spec:

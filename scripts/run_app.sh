@@ -10,16 +10,17 @@ elif [[ -z $FLASK_APP ]]; then
   exit 1
 fi
 
-# Wait for database
-DATABASE_URL=$DATABASE_URI dbmate wait
 
-# Run migrations
+echo "Attempt to run database migrations..."
+
+DATABASE_URL=$DATABASE_URI dbmate wait
 DATABASE_URL=$DATABASE_URI dbmate \
   --migrations-dir cart_database/migrations \
   --schema-file cart_database/schema.sql \
   up
 
-# Run app
+
+echo "Run shopping_cart_service..."
 DATABASE_URI=$DATABASE_URI \
   FLASK_APP=$FLASK_APP \
   shopping_cart_service

@@ -1,8 +1,11 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1 
 kind: Deployment
 metadata:
   name: shopping-cart-db 
 spec:
+  selector:
+    matchLabels:
+      app: shopping-cart-db
   replicas: 1
   template:
     metadata:
@@ -19,12 +22,12 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: shopping-cart-db
+                  name: shopping-cart-secrets
                   key: db-name 
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: shopping-cart-db
+                  name: shopping-cart-secrets
                   key: db-username
             - name: POSTGRES_PASSWORD
               valueFrom:
@@ -37,4 +40,4 @@ spec:
       volumes:
         - name: shopping-cart-db 
           persistentVolumeClaim:
-            claimName: postgres-pv-claim
+            claimName: shopping-cart-db-pv-claim
