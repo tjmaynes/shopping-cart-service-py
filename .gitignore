@@ -150,3 +150,6 @@ static
 .gitsecret/keys/random_seed
 !*.secret
 cart_infrastructure/secrets.yml
+
+# Mac OS
+.DS_Store
