@@ -27,7 +27,7 @@ To get started make sure the following requirements (for development and deploym
 ### Running the App
 To run the app in a `kuberenetes` cluster, run the following command:
 ```bash
-make deploy_app
+make deploy_app_to_local
 ```
 
 *or* to run the app using `docker-compose`, run the following command:

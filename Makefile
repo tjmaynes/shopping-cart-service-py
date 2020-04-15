@@ -64,31 +64,24 @@ ensure_kubectl_installed:
 	$(call ensure_command_installed,kubectl)
 
 switch_context: ensure_kubectl_installed
-	kubectl config use-context docker-for-desktop
+	kubectl config use-context docker-desktop
 
-add_secrets:
-	kubectl apply -f cart_infrastructure/shopping-cart-common/secrets.yml
+define manage_app
+	chmod +x ./scripts/manage_app.sh
+	./scripts/manage_app.sh $1 $2
+endef
 
-destroy_secrets:
-	kubectl delete -f cart_infrastructure/shopping-cart-common/secrets.yml || true
+deploy_app_to_gke:
+	$(call manage_app,gke,apply)
 
-deploy_db: add_secrets 
-	kubectl apply -f cart_infrastructure/shopping-cart-db/persistence.yml
-	kubectl apply -f cart_infrastructure/shopping-cart-db/deployment.yml
-	kubectl apply -f cart_infrastructure/shopping-cart-db/service.yml
+destroy_gke_app:
+	$(call manage_app,gke,delete)
 
-destroy_db: destroy_secrets 
-	kubectl delete -f cart_infrastructure/shopping-cart-db/deployment.yml || true
-	kubectl delete -f cart_infrastructure/shopping-cart-db/service.yml || true
-	kubectl delete -f cart_infrastructure/shopping-cart-db/persistence.yml || true
+deploy_app_to_local: switch_context
+	$(call manage_app,local,apply)
 
-deploy_app: deploy_db
-	kubectl apply -f cart_infrastructure/shopping-cart-service/deployment.yml
-	kubectl apply -f cart_infrastructure/shopping-cart-service/service.yml
-
-destroy_app: destroy_db
-	kubectl delete -f cart_infrastructure/shopping-cart-service/deployment.yml || true
-	kubectl delete -f cart_infrastructure/shopping-cart-service/service.yml || true
+destroy_local_app: switch_context
+	$(call manage_app,local,delete)
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/

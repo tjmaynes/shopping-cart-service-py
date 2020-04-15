@@ -10,4 +10,3 @@ spec:
       port: 5000 
       name: shopping-cart-service 
   type: LoadBalancer
-

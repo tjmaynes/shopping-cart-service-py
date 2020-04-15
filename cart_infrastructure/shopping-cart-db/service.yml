@@ -11,4 +11,4 @@ spec:
      nodePort: 30050
      name: shopping-cart-db
   selector:
-   app: shopping-cart-db 
+   app: shopping-cart-db
