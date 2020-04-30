@@ -20,6 +20,7 @@ To get started make sure the following requirements (for development and deploym
 - [DBMate](https://github.com/amacneil/dbmate) (Platform-agnostic Database Migrations Tool)
 - [Docker](https://hub.docker.com/) (Containerization)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (K8s deployment CLI)
+- [Skaffold](https://skaffold.dev/) (K8s development tool)
 - [Curl](https://curl.haxx.se/) (HTTP REST client)
 
 > This project uses the `make` command quite frequently. Similar to how `gradle` is used in Java, Spring, or many other JVM-based projects, `make` is used as a tool that acts as an "interface" to the project. A big reason as to why I've chosen `make` as my de-facto "project interface tool" is that it acts as a simple, well documented, script runner and it's generally available on most unix-based machines. For more info on the available `make` commands, check out the [usage](https://github.com/tjmaynes/sample-python-app#usage) section. 
@@ -27,12 +28,12 @@ To get started make sure the following requirements (for development and deploym
 ### Running the App
 To run the app in a `kuberenetes` cluster, run the following command:
 ```bash
-make deploy_app_to_local
+skaffold dev
 ```
 
 *or* to run the app using `docker-compose`, run the following command:
 ```bash
-make develop_app
+docker-compose up
 ```
 
 ### Playing with the Shopping Cart Service

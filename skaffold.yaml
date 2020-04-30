@@ -1,0 +1,17 @@
+apiVersion: skaffold/v2beta2
+kind: Config
+metadata:
+  name: sample-python-app
+build:
+  artifacts:
+  - image: tjmaynes/python-shopping-cart-service
+deploy:
+  kubectl:
+    manifests:
+    - cart_infrastructure/shopping-cart-common/secret.yml
+    - cart_infrastructure/shopping-cart-db/deployment.yml
+    - cart_infrastructure/shopping-cart-db/persistence.gke.yml
+    - cart_infrastructure/shopping-cart-db/persistence.local.yml
+    - cart_infrastructure/shopping-cart-db/service.yml
+    - cart_infrastructure/shopping-cart-service/deployment.yml
+    - cart_infrastructure/shopping-cart-service/service.yml

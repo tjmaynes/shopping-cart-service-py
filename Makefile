@@ -60,28 +60,5 @@ push_image: ensure_docker_installed
 	$(TAG) \
 	$(REGISTRY_PASSWORD)
 
-ensure_kubectl_installed:
-	$(call ensure_command_installed,kubectl)
-
-switch_context: ensure_kubectl_installed
-	kubectl config use-context docker-desktop
-
-define manage_app
-	chmod +x ./scripts/manage_app.sh
-	./scripts/manage_app.sh $1 $2
-endef
-
-deploy_app_to_gke:
-	$(call manage_app,gke,apply)
-
-destroy_gke_app:
-	$(call manage_app,gke,delete)
-
-deploy_app_to_local: switch_context
-	$(call manage_app,local,apply)
-
-destroy_local_app: switch_context
-	$(call manage_app,local,delete)
-
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/
