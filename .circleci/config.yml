@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  test:
+    working_directory: ~/sample-python-app
+    docker:
+      - image: circleci/python:3.8.0
+        environment:
+          DATABASE_URI: $DATABASE_URI
+          FLASK_APP: "cart_api:create_app()"
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run:
+          name: Install Project Dependencies
+          command: pip install -e ".[dev]"
+      - run:
+          name: Run Tests
+          command: ./scripts/run_test.sh
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: tr1
+
