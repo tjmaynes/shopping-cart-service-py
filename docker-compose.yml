@@ -1,7 +1,7 @@
 version: '3'
 services:
   cart-app:
-    image: "tjmaynes/python-shopping-cart-service:1.0.3"
+    build: .
     restart: always
     networks:
       - cart-network 
