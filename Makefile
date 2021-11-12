@@ -1,64 +1,55 @@
-TEST_ENVIRONMENT ?= local 
-PYTHON_CART_DB_USERNAME ?= postgres
-PYTHON_CART_DB_NAME = cart
-REGISTRY_USERNAME ?= tjmaynes
-IMAGE_NAME ?= python-shopping-cart-service
-TAG = $(shell cat cart_api/VERSION)
+ENVIRONMENT := development
 
-define ensure_command_installed
-	command -v $1 || (echo "Command '$1' not found..." && false)
-endef
+include .env.$(ENVIRONMENT)
+export $(shell sed 's/=.*//' .env.$(ENVIRONMENT))
 
-ensure_virtualenv_installed:
-	$(call ensure_command_installed,virtualenv)
+export TAG=$(shell git rev-parse --short HEAD)
 
-ensure_docker_installed:
-	$(call ensure_command_installed,docker)
+install:
+	./scripts/install.sh
 
-ensure_dbmate_installed:
-	$(call ensure_command_installed,dbmate)
+migrate:
+	./scripts/migrate.sh
 
-ensure_git_secret_installed:
-	$(call ensure_command_installed,git-secret)
+test: migrate
+	. .venv/bin/activate; python3 -m pytest
 
-install_dependencies: ensure_virtualenv_installed
-	test -d .venv || virtualenv .venv
-	. .venv/bin/activate; pip install -e ".[dev]"
+lint:
+	. .venv/bin/activate; mypy --ignore-missing-imports api/main.py
 
-test: ensure_virtualenv_installed 
-	chmod +x ./scripts/run_tests.sh
-	. .venv/bin/activate; source .env.$(TEST_ENVIRONMENT) && ./scripts/run_tests.sh
+start: migrate
+	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) api.main:app 
 
-develop_app: ensure_docker_installed ensure_dbmate_installed 
-	docker-compose up
+seed: migrate
+	. .venv/bin/activate; python3 -m api.seed:seed
 
-run_local_db: ensure_docker_installed
-	docker-compose run --service-ports cart-db 
+run_local_db:
+	kubectl apply -f ./k8s/shopping-cart-common/secret.yml
+	kubectl apply -f ./k8s/shopping-cart-db/deployment.yml
+	kubectl apply -f ./k8s/shopping-cart-db/persistence.local.yml
 
-debug_local_db: ensure_docker_installed
-	docker-compose run cart-db psql -h cart-db -U $(PYTHON_CART_DB_USERNAME) $(PYTHON_CART_DB_NAME)
+connect_localhost_to_remote_db:
+	kubectl port-forward svc/shopping-cart-db 5432:5432
 
-build_image: ensure_docker_installed
-	chmod +x ./scripts/$@.sh
-	./scripts/$@.sh \
-	$(REGISTRY_USERNAME) \
-	$(IMAGE_NAME) \
-	$(TAG)
+debug_local_db:
+	kubectl run cart-db-debug --rm -i --tty --image=postgres:11.5-alpine -- \
+		psql -h shopping-cart-db --username $(POSTGRES_USER) --password $(POSTGRES_PASS) $(POSTGRES_DB)
 
-debug_image: ensure_docker_installed
-	chmod +x ./scripts/$@.sh
-	./scripts/$@.sh \
-	$(REGISTRY_USERNAME) \
-	$(IMAGE_NAME) \
-	$(TAG)
+stop_local_db:
+	kubectl delete -f ./k8s/shopping-cart-common/secret.yml
+	kubectl delete -f ./k8s/shopping-cart-db/deployment.yml
+	kubectl delete -f ./k8s/shopping-cart-db/persistence.local.yml
 
-push_image: ensure_docker_installed
-	chmod +x ./scripts/$@.sh
-	./scripts/$@.sh \
-	$(REGISTRY_USERNAME) \
-	$(IMAGE_NAME) \
-	$(TAG) \
-	$(REGISTRY_PASSWORD)
+build_image:
+	./scripts/build-image.sh
+
+debug_image:
+	./scripts/debug-image.sh
+
+push_image:
+	./scripts/push-image.sh
+
+deploy: install lint test build_image push_image
 
 clean:
-	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/
+	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/ bin/*

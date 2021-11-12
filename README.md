@@ -1,13 +1,12 @@
-# Sample Flask App
+# Sample Python App
 
 > The goal of this project is to demonstrate what managing, testing, building and deploying a CRUD Python service looks like. By building this service, I was able see how the following works:
-> - building a CRUD service using [Flask](https://palletsprojects.com/p/flask/), the popular Python web framework
-> - using the [Either monad](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/10_Error_Handling) to build operation pipelines
-> - integration tests via unittest
-> - setting up Postgres via [docker-compose](https://docs.docker.com/compose/)
-> - database migrations via [dbmate](https://github.com/amacneil/dbmate)
+> - building a CRUD service using [fastapi](https://fastapi.tiangolo.com/)
+> - using the [Result](https://github.com/rustedpy/result) library to build "operation pipelines"
+> - integration tests via Pytest
+> - setting up Postgres via [Kubernetes](https://docs.docker.com/compose/)
+> - database migrations via [DBMate](https://github.com/amacneil/dbmate)
 > - applying type safety (Protocol, Generic, TypeVar) to Python via the [typing](https://docs.python.org/3/library/typing.html) library
-> - setting up python app distribution via [wheel](https://pythonwheels.com/)
 > - useful build, debug and push scripts for docker
 
 ## Getting Started
@@ -15,31 +14,19 @@
 To get started make sure the following requirements (for development and deployment tooling) are installed on your development machine:
 
 - [GNU Make](https://www.gnu.org/software/make) (Script Runner)
-- [Python 3.8](https://www.python.org/downloads/release/python-382/) (Project Programming Language)
+- [Python 3.10+](https://www.python.org/downloads/) (Project Programming Language)
 - [Virtualenv](https://virtualenv.pypa.io/en/latest/) (Python Dependency Manager)
 - [DBMate](https://github.com/amacneil/dbmate) (Platform-agnostic Database Migrations Tool)
 - [Docker](https://hub.docker.com/) (Containerization)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (K8s deployment CLI)
-- [Skaffold](https://skaffold.dev/) (K8s development tool)
 - [Curl](https://curl.haxx.se/) (HTTP REST client)
 
 > This project uses the `make` command quite frequently. Similar to how `gradle` is used in Java, Spring, or many other JVM-based projects, `make` is used as a tool that acts as an "interface" to the project. A big reason as to why I've chosen `make` as my de-facto "project interface tool" is that it acts as a simple, well documented, script runner and it's generally available on most unix-based machines. For more info on the available `make` commands, check out the [usage](https://github.com/tjmaynes/sample-python-app#usage) section. 
 
-### Running the App
-To run the app in a `kuberenetes` cluster, run the following command:
-```bash
-skaffold dev
-```
-
-*or* to run the app using `docker-compose`, run the following command:
-```bash
-docker-compose up
-```
-
 ### Playing with the Shopping Cart Service
 To get the health endpoint, run the following command:
 ```bash
-curl -X GET localhost:5000/healthcheck
+curl -X GET localhost:5000/health
 ```
 
 To get all cart items, run the following command:
@@ -96,14 +83,9 @@ make test
 *If the test suite is not passing, please provide an [issue](https://github.com/tjmaynes/sample-python-app/issues) for the project.*
 
 ## Usage
-To install `virtualenv` (python dependency manager), run the following command:
-```bash
-pip install virtualenv
-```
-
 To install project dependencies, run the following command:
 ```bash
-make install_dependencies
+make install
 ```
 
 To run all tests (**make sure database is running**), run the following command:
@@ -118,7 +100,7 @@ make run_local_db
 
 To start the app and database locally, run the following command:
 ```bash
-make development
+make start
 ```
 
 To debug the local database, run the following command:
@@ -143,12 +125,7 @@ make push_image
 
 To deploy the `shopping-cart-service`, run the following command:
 ```bash
-make deploy_app
-```
-
-To destroy the `shopping-cart-service`, run the following command:
-```bash
-make destroy_app
+make deploy
 ```
 
 To get the project in a clean state, run the following command:
@@ -158,9 +135,7 @@ make clean
 
 ## Todo
 
-- Setup CI pipeline
 - Add performance testing
-- Setup gunicorn
 - Add support for monitoring
 - Add better support for logging
 

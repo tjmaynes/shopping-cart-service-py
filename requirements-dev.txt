@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==6.2.3
+requests==2.25.1
+mypy==0.910

@@ -19,7 +19,7 @@ spec:
           ports:
             - containerPort: 5000
           env:
-            - name: DATABASE_URI
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: shopping-cart-secrets

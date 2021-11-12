@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10.0"
+          architecture: x64
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: 🔨 Setup PostgreSQL database 🔨 
+        uses: m4nu56/postgresql-action@1.0
+        with:
+          postgresql version: '11.5-alpine'
+          postgresql db: 'shopping-cart'
+          postgresql user: 'root'
+          postgresql password: 'postgres'
+      - name: 🔨 Install Dependencies 🔨
+        run: sudo apt-get update && sudo apt-get install make && make install
+      - name: 🚀 Deploy 🚀 
+        run: make deploy
+        env:
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: ⏰ Bump version and push tag ⏰
+        uses: anothrNick/github-tag-action@master
+        id: tag-action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: tjmaynes
+          WITH_V: true

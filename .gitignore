@@ -153,3 +153,6 @@ cart_infrastructure/secrets.yml
 
 # Mac OS
 .DS_Store
+
+# Generated
+bin/
