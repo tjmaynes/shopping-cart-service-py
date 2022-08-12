@@ -29,9 +29,9 @@ jobs:
           postgresql version: '11.5-alpine'
           postgresql db: 'shopping-cart'
           postgresql user: 'root'
-          postgresql password: 'postgres'
+          postgresql password: 'password'
       - name: 🔨 Install Dependencies 🔨
-        run: sudo apt-get update && sudo apt-get install make && make install
+        run: sudo apt-get update && sudo apt-get install make
       - name: 🚀 Deploy 🚀 
         run: make deploy
         env:

@@ -57,7 +57,7 @@ class CartRepository(Repository[CartItemIn, CartItem]):
         try:
             cursor = self.__db_conn.cursor()
             cursor.execute("UPDATE cart SET name = %s, price = %s, manufacturer = %s WHERE id = %s RETURNING id, name, price, manufacturer, last_modified_at, created_at",
-                [item.name, item.price, item.manufacturer, item.id]
+                [item.name, item.price, item.manufacturer, id]
             )
             result = cursor.fetchone()
             self.__db_conn.commit()

@@ -32,5 +32,6 @@ def seed_db() -> str:
     else:
         return f"Unable to seed database: {seed_result.value}"
 
+
 if __name__ == "__main__":
     print(seed_db())

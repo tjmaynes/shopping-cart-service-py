@@ -3,7 +3,7 @@
 set -e
 
 function check_requirements() {
-  if [[ -z "$(command -v bin/pack)" ]]; then
+  if [[ -z "$(command -v docker)" ]]; then
     echo "Please install 'pack' before running this script"
     exit 1
   elif [[ -z "$REGISTRY_USERNAME" ]]; then
@@ -21,11 +21,7 @@ function check_requirements() {
 function main() {
   check_requirements
 
-  bin/pack build "$REGISTRY_USERNAME/$IMAGE_NAME:$TAG" \
-    --builder paketobuildpacks/builder:base \
-    --buildpack gcr.io/paketo-buildpacks/python \
-    --buildpack gcr.io/paketo-buildpacks/procfile \
-    --default-process web
+  docker build --tag $REGISTRY_USERNAME/$IMAGE_NAME:$TAG .
 }
 
 main

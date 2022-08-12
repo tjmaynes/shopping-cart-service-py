@@ -55,7 +55,7 @@ def build_app() -> FastAPI:
                 return JSONResponse(status_code=500, content=jsonable_encoder(add_item_result.value))
 
     @app.put("/cart/{id}", response_model=CartItem)
-    async def update_cart_item(id: str, item: CartItem) -> JSONResponse:
+    async def update_cart_item(id: str, item: CartItemIn) -> JSONResponse:
         update_item_result = cart_service.update_item(id, item)
         if isinstance(update_item_result, Ok):
             return JSONResponse(status_code=200, content=jsonable_encoder(update_item_result.value))
@@ -66,15 +66,15 @@ def build_app() -> FastAPI:
                 return JSONResponse(status_code=500, content=jsonable_encoder(update_item_result.value))
 
     @app.delete("/cart/{id}", response_model=Dict)
-    async def update_cart_item(id: str) -> JSONResponse:
-        update_item_result = cart_service.remove_item_by_id(id)
-        if isinstance(update_item_result, Ok):
-            return JSONResponse(status_code=200, content=jsonable_encoder({ "id": update_item_result.value }))
+    async def delete_cart_item(id: str) -> JSONResponse:
+        delete_item_result = cart_service.remove_item_by_id(id)
+        if isinstance(delete_item_result, Ok):
+            return JSONResponse(status_code=200, content=jsonable_encoder({ "id": delete_item_result.value }))
         else:
-            if isinstance(update_item_result.value, NotFoundException):
-                return JSONResponse(status_code=404, content=str(update_item_result.value))
+            if isinstance(delete_item_result.value, NotFoundException):
+                return JSONResponse(status_code=404, content=str(delete_item_result.value))
             else:
-                return JSONResponse(status_code=500, content=jsonable_encoder(update_item_result.value))
+                return JSONResponse(status_code=500, content=jsonable_encoder(delete_item_result.value))
 
     return app
 

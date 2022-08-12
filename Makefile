@@ -1,7 +1,7 @@
-ENVIRONMENT := development
+ENV_FILE := $(or $(ENV_FILE), .env.development)
 
-include .env.$(ENVIRONMENT)
-export $(shell sed 's/=.*//' .env.$(ENVIRONMENT))
+include $(ENV_FILE)
+export $(shell sed 's/=.*//' $(ENV_FILE))
 
 export TAG=$(shell git rev-parse --short HEAD)
 
@@ -21,7 +21,7 @@ start: migrate
 	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) api.main:app 
 
 seed: migrate
-	. .venv/bin/activate; python3 -m api.seed:seed
+	. .venv/bin/activate; python3 -m api.seed
 
 run_local_db:
 	kubectl apply -f ./k8s/shopping-cart-common/secret.yml

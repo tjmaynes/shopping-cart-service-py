@@ -26,17 +26,17 @@ To get started make sure the following requirements (for development and deploym
 ### Playing with the Shopping Cart Service
 To get the health endpoint, run the following command:
 ```bash
-curl -X GET localhost:5000/health
+curl -X GET localhost:5001/health
 ```
 
 To get all cart items, run the following command:
 ```bash
-curl -X GET 'localhost:5000/cart/?page_number=0&page_size=20'
+curl -X GET 'localhost:5001/cart/?page_number=0&page_size=20'
 ```
 
 To get a cart item by id, run the following command:
 ```bash
-curl -X GET localhost:5000/cart/1
+curl -X GET localhost:5001/cart/1
 ```
 
 To add a cart item, run the following command:
@@ -45,7 +45,7 @@ curl \
     -X POST \
     -H "Content-Type: application/json" \
     -d '{"name":"70-200mm Lens","price":240000,"manufacturer": "Canon"}' \
-    localhost:5000/cart/
+    localhost:5001/cart/
 ```
 
 To update a cart item, run the following command:
@@ -54,12 +54,12 @@ curl \
     -X PUT \
     -H "Content-Type: application/json" \
     -d '{"name": "Lens Cap", "price": "888888888", "manufacturer": "Canon"}' \
-    localhost:5000/cart/1
+    localhost:5001/cart/1
 ```
 
 To remove a cart item, run the following command:
 ```bash
-curl -X DELETE localhost:5000/cart/1
+curl -X DELETE localhost:5001/cart/1
 ```
 
 ### Development

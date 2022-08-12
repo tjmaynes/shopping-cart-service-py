@@ -1,4 +1,4 @@
 -r requirements.txt
-pytest==6.2.3
+pytest==7.1.2
 requests==2.25.1
-mypy==0.910
+mypy==0.971
