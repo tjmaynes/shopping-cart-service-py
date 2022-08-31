@@ -42,4 +42,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: tjmaynes
-          WITH_V: true
+          WITH_V: false
+          CUSTOM_TAG: latest

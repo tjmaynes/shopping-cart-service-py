@@ -15,7 +15,7 @@ test: migrate
 	. .venv/bin/activate; python3 -m pytest
 
 lint:
-	. .venv/bin/activate; mypy --ignore-missing-imports api/main.py
+	. .venv/bin/activate; mypy --ignore-missing-imports api/
 
 start: migrate
 	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) api.main:app 

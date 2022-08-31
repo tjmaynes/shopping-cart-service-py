@@ -14,7 +14,7 @@ class Service(Generic[S, T]):
 
     def get_items(self, page_number: int = 0, page_size: int = 10) -> Result[List[T], CustomException]:
         return self.__repository.get_all_items(page_number, page_size)
-        
+
 
     def get_item_by_id(self, id: str) -> Result[T, CustomException]:
         return self.__repository.get_item_by_id(id)
@@ -30,7 +30,6 @@ class Service(Generic[S, T]):
 
     def update_item(self, id: str, item: S) -> Result[T, CustomException]:
         validation_result = self.__validate_item(item)
-        print(f"hello = {validation_result.value}")
         if isinstance(validation_result, Ok):
             return self.__repository.update_item(id, validation_result.value)
         else:

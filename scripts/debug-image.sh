@@ -23,7 +23,7 @@ function main() {
 
   docker run --interactive --tty \
     --env PORT=$PORT \
-    --network sample-python-app_shopping-cart-network \
+    --network shopping-cart-service_shopping-cart-network \
     --publish $PORT:$PORT \
     $REGISTRY_USERNAME/$IMAGE_NAME:$TAG
 }

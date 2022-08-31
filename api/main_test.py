@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from api.core import Connection
 from api.main import app
 from api.seed import seed_db
-from typing import Dict, Any
+from typing import Dict, Any, Iterator
 from psycopg2 import connect
 from os import getenv
 from datetime import datetime
@@ -16,7 +16,7 @@ class TestApi:
         yield TestClient(app)
 
     @pytest.fixture
-    def default_cart_item(self) -> Dict:
+    def default_cart_item(self) -> Iterator[Dict]:
         yield dict(name='hello', manufacturer='something', price=1800)
 
     @pytest.fixture
