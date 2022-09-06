@@ -1,4 +1,4 @@
 fastapi==0.70.0
 result==0.6.0
-psycopg2-binary==2.9.2
+psycopg2-binary==2.9.3
 uvicorn==0.15.0
