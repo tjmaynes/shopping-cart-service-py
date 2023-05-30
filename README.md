@@ -1,6 +1,6 @@
 # Shopping Cart Service
 
-> Building and deploying a shopping cart CRUD service with Python3/FastAPI and Kubernetes.
+> Sample shopping cart CRUD service using Python3/FastAPI and Kubernetes
 
 ## Getting Started
 
