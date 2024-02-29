@@ -78,7 +78,7 @@ Next, let's make sure the test suite for the application is running as expected.
 
 2. Since our test suite talks to a database, let's make sure that PostgreSQL is running locally via:
 ```bash
-make run_local_db
+make start_local_db
 ```
 
 3. Finally, let's run our tests via:
@@ -101,7 +101,7 @@ make test
 
 To make sure the database is running, run the following command:
 ```bash
-make run_local_db
+make start_local_db
 ```
 
 To start the app and database locally, run the following command:

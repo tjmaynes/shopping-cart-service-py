@@ -23,7 +23,7 @@ class Service(Generic[S, T]):
     def add_item(self, item: S) -> Result[T, CustomException]:
         validation_result = self.__validate_item(item)
         if isinstance(validation_result, Ok):
-            return self.__repository.add_item(validation_result.value)
+            return self.__repository.add_item(validation_result.ok_value)
         else:
             return validation_result
 
@@ -31,7 +31,7 @@ class Service(Generic[S, T]):
     def update_item(self, id: str, item: S) -> Result[T, CustomException]:
         validation_result = self.__validate_item(item)
         if isinstance(validation_result, Ok):
-            return self.__repository.update_item(id, validation_result.value)
+            return self.__repository.update_item(id, validation_result.ok_value)
         else:
             return validation_result
 

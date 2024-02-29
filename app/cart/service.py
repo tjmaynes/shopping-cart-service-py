@@ -1,5 +1,5 @@
 from typing import Callable, List
-from api.core import Service, Repository
+from app.core import Service, Repository
 from .domain import CartItem, CartItemIn, validate_cart_item
 
 def CartService(repository: Repository) -> Service[CartItemIn, CartItem]:

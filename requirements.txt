@@ -1,4 +1,5 @@
-fastapi==0.70.0
-result==0.6.0
-psycopg2-binary==2.9.3
-uvicorn==0.15.0
+fastapi==0.110.0
+httpx==0.27.0
+result==0.16.0
+psycopg2-binary==2.9.9
+uvicorn==0.27.1

@@ -3,7 +3,7 @@ from psycopg2 import connect
 from result import Ok, Err, Result
 from os import getenv
 from json import load as get_json_data
-from api.cart import CartService, CartRepository, CartItemIn
+from app.cart import CartService, CartRepository, CartItemIn
 
 
 def safely_load_json(filename: str) -> Result[List[Dict[str, Any]], Exception]:
@@ -21,16 +21,16 @@ def seed_db() -> str:
         db_conn = connect(getenv("DATABASE_URL"))
         service = CartService(CartRepository(db_conn))
 
-        for item in seed_result.value:
+        for item in seed_result.ok_value:
             service.add_item(CartItemIn(
                 name = item["name"],
                 manufacturer = item["manufacturer"],
                 price = item["price"]
             ))
 
-        return f"Seeded database with {len(seed_result.value)} items!"
+        return f"Seeded database with {len(seed_result.ok_value)} items!"
     else:
-        return f"Unable to seed database: {seed_result.value}"
+        return f"Unable to seed database: {seed_result.err_value}"
 
 
 if __name__ == "__main__":

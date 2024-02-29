@@ -1,6 +1,6 @@
-from api.core.repository import Repository
-from api.core.service import Service
-from api.core.exceptions import (\
+from app.core.repository import Repository
+from app.core.service import Service
+from app.core.exceptions import (\
     CustomException, \
     DBConnectionFailedException, \
     NotFoundException, \
@@ -8,4 +8,4 @@ from api.core.exceptions import (\
     InvalidItemException, \
     BadRequestException, \
     UnknownException)
-from api.core.types import Connection
+from app.core.types import Connection

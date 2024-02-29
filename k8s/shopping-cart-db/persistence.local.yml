@@ -5,7 +5,7 @@ metadata:
   labels:
     app: shopping-cart-db 
 spec:
-  storageClassName: manual
+  storageClassName: local-path
   accessModes:
     - ReadWriteMany
   resources:
@@ -20,10 +20,11 @@ metadata:
     type: local
     app: shopping-cart-db
 spec:
-  storageClassName: manual
+  storageClassName: local-path
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/data"
+    path: "/tmp/shopping-cart/data"
+    type: Directory

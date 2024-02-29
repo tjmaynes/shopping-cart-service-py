@@ -1,19 +1,19 @@
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from api.core import Connection
-from api.main import app
-from api.seed import seed_db
+from .core import Connection
+from .main import api
+from .seed import seed_db
 from typing import Dict, Any, Iterator
 from psycopg2 import connect
 from os import getenv
 from datetime import datetime
 
 
-class TestApi:
+class TestApp:
     @pytest.fixture
     def client(self):
-        yield TestClient(app)
+        yield TestClient(app=api)
 
     @pytest.fixture
     def default_cart_item(self) -> Iterator[Dict]:
@@ -32,13 +32,13 @@ class TestApi:
     def test_cart_index_returns_items_from_cart(self, client: TestClient, db_conn: Connection):
         seed_db()
 
-        response = client.get('/cart/')
+        response = client.get('/cart')
         assert 200 == response.status_code
 
         assert len(response.json()) == 10
 
         page_size = 20
-        response = client.get(f'/cart/?page_number=0&page_size={page_size}')
+        response = client.get(f'/cart?page_number=0&page_size={page_size}')
 
         assert 200 == response.status_code
         assert len(response.json()) == page_size

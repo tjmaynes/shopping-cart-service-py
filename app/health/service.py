@@ -1,5 +1,5 @@
 from psycopg2 import Error as Psycopg2Error
-from api.core import Connection
+from app.core import Connection
 from .domain import Health
 
 class HealthService:

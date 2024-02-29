@@ -15,18 +15,18 @@ test: migrate
 	. .venv/bin/activate; python3 -m pytest
 
 lint:
-	. .venv/bin/activate; mypy api/
+	. .venv/bin/activate; mypy app/
 
 start: migrate
-	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) api.main:app 
+	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) app.main:api
 
 seed: migrate
-	. .venv/bin/activate; python3 -m api.seed
+	. .venv/bin/activate; python3 -m app.seed
 
-run_local_db:
+start_local_db:
 	kubectl apply -f ./k8s/shopping-cart-common/secret.yml
 	kubectl apply -f ./k8s/shopping-cart-db/deployment.yml
-	kubectl apply -f ./k8s/shopping-cart-db/persistence.local.yml
+	(mkdir -p /tmp/shopping-cart/data || true) && kubectl apply -f ./k8s/shopping-cart-db/persistence.local.yml
 
 connect_localhost_to_remote_db:
 	kubectl port-forward svc/shopping-cart-db 5432:5432

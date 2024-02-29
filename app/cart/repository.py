@@ -1,5 +1,5 @@
 from typing import List, TypeVar, Tuple
-from api.core import Repository, CustomException, UnknownException, NotFoundException, Connection
+from app.core import Repository, CustomException, UnknownException, NotFoundException, Connection
 from .domain import CartItem, CartItemIn
 from result import Ok, Err, Result
 import datetime
@@ -19,7 +19,7 @@ class CartRepository(Repository[CartItemIn, CartItem]):
             return Ok([])
 
         except Exception as inst:
-            return Err(UnknownException(list(inst.args)))
+            return Err(UnknownException(inst))
 
 
     def get_item_by_id(self, id: str) -> Result[CartItem, CustomException]:
@@ -29,10 +29,10 @@ class CartRepository(Repository[CartItemIn, CartItem]):
             row = cursor.fetchone()
             if row:
                 return Ok(self.__from_tuple(row))
-            return Err(NotFoundException())
+            return Err(NotFoundException(message="id: {}".format(id)))
 
         except Exception as inst:
-            return Err(UnknownException(list(inst.args)))
+            return Err(UnknownException(inst))
 
 
     def add_item(self, item: CartItemIn) -> Result[CartItem, CustomException]:
@@ -46,11 +46,11 @@ class CartRepository(Repository[CartItemIn, CartItem]):
 
             if result:
                 return Ok(self.__from_tuple(result))
-            return Err(UnknownException(["Unable to add item at this time!"]))
+            return Err(UnknownException("Unable to add item at this time!"))
 
         except Exception as inst:
             self.__db_conn.rollback()
-            return Err(UnknownException(list(inst.args)))
+            return Err(UnknownException(inst))
 
 
     def update_item(self, id: str, item: CartItemIn) -> Result[CartItem, CustomException]:
@@ -63,11 +63,11 @@ class CartRepository(Repository[CartItemIn, CartItem]):
             self.__db_conn.commit()
             if result:
                 return Ok(self.__from_tuple(result))
-            return Err(NotFoundException())
+            return Err(NotFoundException(message="id: {}".format(id)))
 
         except Exception as inst:
             self.__db_conn.rollback()
-            return Err(UnknownException(list(inst.args)))
+            return Err(UnknownException(inst))
 
 
     def remove_item_by_id(self, id: str) -> Result[str, CustomException]:
@@ -79,16 +79,16 @@ class CartRepository(Repository[CartItemIn, CartItem]):
 
             if rows_deleted == 1:
                 return Ok(id)
-            return Err(NotFoundException([id]))
+            return Err(NotFoundException(message="id: {}".format(id)))
         
         except Exception as inst:
             self.__db_conn.rollback()
-            return Err(UnknownException(list(inst.args)))
+            return Err(UnknownException(inst))
 
 
     def __from_tuple(self, tuple: Tuple) -> CartItem:
         return CartItem(
-                id=tuple[0],
+                id="{}".format(tuple[0]),
                 name=tuple[1],
                 price=tuple[2],
                 manufacturer=tuple[3],
