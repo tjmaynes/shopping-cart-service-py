@@ -142,8 +142,9 @@ cython_debug/
 media
 static
 
-# VSCode
-.vscode
+# Editors
+.vscode/
+.idea/
 
 # Virtualenv
 .venv

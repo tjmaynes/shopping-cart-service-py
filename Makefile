@@ -3,13 +3,18 @@ ENV_FILE := $(or $(ENV_FILE), .env.development)
 include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
 
+export REGISTRY_USERNAME=tjmaynes
+export IMAGE_NAME=shopping-cart-service-py
 export TAG=$(shell git rev-parse --short HEAD)
 
 install:
+	chmod +x ./scripts/install.sh
 	./scripts/install.sh
 
 migrate:
-	./scripts/migrate.sh
+	DATABASE_URL=$(DATABASE_URL) bin/dbmate wait
+	DATABASE_URL=$(DATABASE_URL) bin/dbmate up
+	DATABASE_URL=$(DATABASE_URL) bin/dbmate migrate
 
 test: migrate
 	. .venv/bin/activate; python3 -m pytest
@@ -23,31 +28,35 @@ start: migrate
 seed: migrate
 	. .venv/bin/activate; python3 -m app.seed
 
-start_local_db:
-	kubectl apply -f ./k8s/shopping-cart-common/secret.yml
-	kubectl apply -f ./k8s/shopping-cart-db/deployment.yml
-	(mkdir -p /tmp/shopping-cart/data || true) && kubectl apply -f ./k8s/shopping-cart-db/persistence.local.yml
+build_image:
+	chmod +x ./scripts/build-image.sh
+	./scripts/build-image.sh
+
+debug_image:
+	chmod +x ./scripts/debug-image.sh
+	./scripts/debug-image.sh
+
+push_image:
+	chmod +x ./scripts/push-image.sh
+	./scripts/push-image.sh
 
 connect_localhost_to_remote_db:
 	kubectl port-forward svc/shopping-cart-db 5432:5432
 
+run_local_db:
+	docker compose up
+
 debug_local_db:
-	kubectl run cart-db-debug --rm -i --tty --image=postgres:11.5-alpine -- \
-		psql -h shopping-cart-db --username $(POSTGRES_USER) --password $(POSTGRES_PASS) $(POSTGRES_DB)
+	docker run -it --rm \
+		--network shopping-cart-service-py_shopping-cart-network \
+		postgres:16.3-alpine \
+		psql \
+		-h shopping-cart-db \
+		--username postgres
 
 stop_local_db:
-	kubectl delete -f ./k8s/shopping-cart-common/secret.yml
-	kubectl delete -f ./k8s/shopping-cart-db/deployment.yml
-	kubectl delete -f ./k8s/shopping-cart-db/persistence.local.yml
-
-build_image:
-	./scripts/build-image.sh
-
-debug_image:
-	./scripts/debug-image.sh
-
-push_image:
-	./scripts/push-image.sh
+	docker compose down
+	docker volume rm shopping-cart-service-py_shopping-cart-db
 
 deploy: install lint test build_image push_image
 

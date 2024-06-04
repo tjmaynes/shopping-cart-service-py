@@ -1,6 +1,7 @@
-from psycopg2 import Error as Psycopg2Error
+from psycopg import Error as PsycopgError
 from app.core import Connection
 from .domain import Health
+
 
 class HealthService:
     def __init__(self, db_conn: Connection):
@@ -8,9 +9,7 @@ class HealthService:
         self.__db_cursor = db_conn.cursor()
 
     def check_health(self) -> Health:
-        return Health(
-            database_connected=self.__check_db_conn()
-        )
+        return Health(database_connected=self.__check_db_conn())
 
     def __check_db_conn(self) -> bool:
         try:
@@ -18,5 +17,5 @@ class HealthService:
             _ = self.__db_cursor.fetchone()
             self.__db_conn.commit()
             return True
-        except Psycopg2Error as e:
+        except PsycopgError as e:
             return False

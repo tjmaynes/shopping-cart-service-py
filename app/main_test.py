@@ -1,13 +1,11 @@
 import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from .core import Connection
 from .main import api
 from .seed import seed_db
 from typing import Dict, Any, Iterator
-from psycopg2 import connect
+from psycopg import connect
 from os import getenv
-from datetime import datetime
 
 
 class TestApp:

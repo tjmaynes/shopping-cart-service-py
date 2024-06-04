@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16.3-alpine
+    container_name: shopping-cart-db
+    restart: always
+    user: postgres
+    ports:
+      - "5435:5432"
+    expose:
+      - "5435"
+    volumes:
+      - shopping-cart-db:/var/lib/postgresql/data
+    env_file:
+      - .env.development
+
+networks:
+  shopping-cart-network:
+
+volumes:
+  shopping-cart-db:

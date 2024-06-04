@@ -1,2 +1,3 @@
+direnv 2.32.1
 python 3.11.3
 kubectl 1.26.2

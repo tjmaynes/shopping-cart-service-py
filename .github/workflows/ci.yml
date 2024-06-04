@@ -23,13 +23,10 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: 🔨 Setup PostgreSQL database 🔨
-        uses: m4nu56/postgresql-action@1.0
+      - name: 🔨 Run docker compose 🔨
+        uses: hoverkraft-tech/compose-action@v1.5.1
         with:
-          postgresql version: "11.5-alpine"
-          postgresql db: "shopping-cart"
-          postgresql user: "root"
-          postgresql password: "password"
+          compose-file: "docker-compose.yml"
       - name: 🔨 Install Dependencies 🔨
         run: sudo apt-get update && sudo apt-get install make
       - name: 🚀 Deploy 🚀

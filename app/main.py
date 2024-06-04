@@ -1,21 +1,22 @@
+from app.utils import get_env_var_or_throw
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from psycopg2 import connect
-from result import Ok, Err, Result
+from psycopg import connect
+from result import Ok
 from typing import List, Dict
-import json
 from os import getenv
-from app.core import CustomException, InvalidItemException, NotFoundException
+from app.core import InvalidItemException, NotFoundException
 from app.cart import CartService, CartRepository, CartItem, CartItemIn
-from app.health import HealthService, Health    
+from app.health import HealthService
+
 
 def build_api() -> FastAPI:
-    db_conn = connect(getenv("DATABASE_URL"))
+    db_conn = connect(get_env_var_or_throw("DATABASE_URL"))
 
-    health_service = HealthService(db_conn = db_conn)
-    cart_repository = CartRepository(db_conn = db_conn)
-    cart_service = CartService(repository = cart_repository)
+    health_service = HealthService(db_conn=db_conn)
+    cart_repository = CartRepository(db_conn=db_conn)
+    cart_service = CartService(repository=cart_repository)
 
     app = FastAPI()
 
@@ -77,5 +78,6 @@ def build_api() -> FastAPI:
                 return JSONResponse(status_code=500, content=jsonable_encoder(delete_item_result.err_value))
 
     return app
+
 
 api = build_api()

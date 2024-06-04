@@ -40,6 +40,10 @@ function main() {
     download_and_install_dbmate
   fi
 
+  if [[ -n "$(command -v asdf)" ]]; then
+    asdf install
+  fi
+
   if [[ -z "$(command -v virtualenv)" ]]; then
     pip3 install virtualenv
   fi
