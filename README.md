@@ -35,7 +35,7 @@ curl -X GET localhost:5001/health
 
 To get all cart items, run the following command:
 ```bash
-curl -X GET 'localhost:5001/cart/?page_number=0&page_size=20'
+curl -X GET 'localhost:5001/cart?page_number=0&page_size=20'
 ```
 
 To get a cart item by id, run the following command:

@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16.3-alpine
-    container_name: shopping-cart-db
+    container_name: shopping-cart-py-db
     restart: always
     user: postgres
     ports:

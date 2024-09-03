@@ -1,10 +1,10 @@
 from typing import Dict, Any, List
 
-from app.utils import get_env_var_or_throw
+from shoppingcart.utils import get_env_var_or_throw
 from psycopg import connect
 from result import Ok, Err, Result
 from json import load as get_json_data
-from app.cart import CartService, CartRepository, CartItemIn
+from shoppingcart.cart import CartService, CartRepository, CartItemIn
 
 
 def safely_load_json(filename: str) -> Result[List[Dict[str, Any]], Exception]:
@@ -23,11 +23,13 @@ def seed_db() -> str:
         service = CartService(CartRepository(db_conn))
 
         for item in seed_result.ok_value:
-            service.add_item(CartItemIn(
-                name=item["name"],
-                manufacturer=item["manufacturer"],
-                price=item["price"]
-            ))
+            service.add_item(
+                CartItemIn(
+                    name=item["name"],
+                    manufacturer=item["manufacturer"],
+                    price=item["price"],
+                )
+            )
 
         return f"Seeded database with {len(seed_result.ok_value)} items!"
     else:

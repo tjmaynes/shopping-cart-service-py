@@ -1,5 +1,4 @@
-from psycopg import Error as PsycopgError
-from app.core import Connection
+from shoppingcart.core import Connection
 from .domain import Health
 
 
@@ -17,5 +16,5 @@ class HealthService:
             _ = self.__db_cursor.fetchone()
             self.__db_conn.commit()
             return True
-        except PsycopgError as e:
+        except Exception:
             return False

@@ -1,5 +1,5 @@
 from typing import List, TypeVar, Protocol
-from result import Ok, Err, Result
+from result import Result
 from .exceptions import CustomException
 
 S = TypeVar("S", contravariant=True)
@@ -7,8 +7,9 @@ T = TypeVar("T")
 
 
 class Repository(Protocol[S, T]):
-
-    def get_all_items(self, page_number: int, page_size: int) -> Result[List[T], CustomException]:
+    def get_all_items(
+        self, page_number: int, page_size: int
+    ) -> Result[List[T], CustomException]:
         pass
 
     def add_item(self, item: S) -> Result[T, CustomException]:

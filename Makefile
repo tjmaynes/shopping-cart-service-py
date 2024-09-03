@@ -20,13 +20,16 @@ test: migrate
 	. .venv/bin/activate; python3 -m pytest
 
 lint:
-	. .venv/bin/activate; mypy app/
+	. .venv/bin/activate; python3 -m ruff check --config ruff.toml shoppingcart/
+
+format:
+	. .venv/bin/activate; python3 -m ruff format --config ruff.toml shoppingcart/
 
 start: migrate
-	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) app.main:api
+	. .venv/bin/activate; uvicorn --host 0.0.0.0 --port $(PORT) shoppingcart.main:api
 
 seed: migrate
-	. .venv/bin/activate; python3 -m app.seed
+	. .venv/bin/activate; python3 -m shoppingcart.seed
 
 build_image:
 	chmod +x ./scripts/build-image.sh
@@ -58,7 +61,12 @@ stop_local_db:
 	docker compose down
 	docker volume rm shopping-cart-service-py_shopping-cart-db
 
+ship_it: lint test
+	git push
+
 deploy: install lint test build_image push_image
 
 clean:
 	rm -rf .venv build/ dist/ *.egg-info .pytest_cache/ bin/*
+
+.PHONY: shoppingcart
